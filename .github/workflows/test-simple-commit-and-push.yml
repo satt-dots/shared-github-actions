@@ -81,9 +81,7 @@ jobs:
         test "$COMMIT_MSG" = "Commit message for testing"
 
     - name: 'Test-03: set hash before'
-      run: |
-        HASH=$(git rev-parse HEAD)
-        echo "HASH_BEFORE=$HASH" >> $GITHUB_ENV
+      run: echo "HASH_BEFORE=$(git rev-parse HEAD)" >> $GITHUB_ENV
 
     - name: 'Test-03: no changes'
       uses: satt-dots/simple-commit-and-push@main # TODO: change to tag `v1`
