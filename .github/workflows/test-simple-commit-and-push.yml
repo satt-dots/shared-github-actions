@@ -83,7 +83,7 @@ jobs:
     - name: 'Test-03: set hash before'
       run: |
         HASH=$(git rev-parse HEAD)
-        echo "HASH_AFTER_TEST02=$HASH" >> $GITHUB_ENV
+        echo "HASH_BEFORE=$HASH" >> $GITHUB_ENV
 
     - name: 'Test-03: no changes'
       uses: satt-dots/simple-commit-and-push@main # TODO: change to tag `v1`
@@ -93,7 +93,6 @@ jobs:
     - name: 'Test-03: Check latest commit info'
       run: |
         set -e
-        HASH_BEFORE="$HASH_AFTER_TEST02"
         HASH_AFTER=$(git rev-parse HEAD)
         echo "HASH_BEFORE: $HASH_BEFORE"
         echo "HASH_AFTER: $HASH_AFTER"
