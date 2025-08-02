@@ -1,0 +1,35 @@
+name: Check
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Task
+      uses: arduino/setup-task@v2
+      with:
+        version: 3.x
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Install mise and setup
+      uses: jdx/mise-action@v2
+      with:
+        cache: true
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Setup tools
+      run: task setup
+
+    - name: Check
+      run: task check

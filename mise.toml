@@ -1,0 +1,6 @@
+[tools]
+# Markdown
+"npm:markdownlint-cli" = "latest"
+
+# GitHub Actions
+actionlint = "latest"

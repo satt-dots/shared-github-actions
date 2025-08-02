@@ -1,0 +1,40 @@
+version: '3'
+
+tasks:
+  # General tasks
+  setup:
+    desc: "Setup tools"
+    cmds:
+    - mise trust
+    - mise install
+
+  check:
+    desc: "Check"
+    cmds:
+    - task: md:check
+    - task: github:validate-workflow
+
+  # Markdown tasks
+  md:check:
+    desc: "Check Markdown"
+    cmds:
+    - task: md:fix
+    - task: md:lint
+
+  md:fix:
+    desc: "Auto fix Markdown"
+    cmds:
+    - task: md:lint-fix
+
+  md:lint:
+    desc: "Run markdownlint on project markdown files"
+    cmd: markdownlint *.md
+
+  md:lint-fix:
+    desc: "Fix markdownlint issues automatically"
+    cmd: markdownlint *.md --fix
+
+  # GitHub Actions tasks
+  github:validate-workflow:
+    desc: "Validate GitHub Actions workflow"
+    cmd: actionlint .github/workflows/*.yml
