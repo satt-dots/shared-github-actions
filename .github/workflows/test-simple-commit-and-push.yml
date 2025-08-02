@@ -1,0 +1,100 @@
+name: Test Simple Commit and Push
+
+on:
+  push:
+    paths:
+      - '.github/workflows/test-simple-commit-and-push.yml'
+  pull_request:
+    paths:
+      - '.github/workflows/test-simple-commit-and-push.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Task
+      uses: arduino/setup-task@v2
+      with:
+        version: 3.x
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Install mise and setup
+      uses: jdx/mise-action@v2
+      with:
+        cache: true
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Setup tools
+      run: task setup
+
+    - name: Create a test file
+      run: echo "This is a test file." > test-file.txt
+
+    - name: 'Test-01: use default inputs'
+      uses: satt-dots/simple-commit-and-push@main # TODO: change to tag `v1`
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: 'Test-01: Check latest commit info'
+      run: |
+        set -e
+        AUTHOR_NAME=$(git show -s --format='%an')
+        AUTHOR_EMAIL=$(git show -s --format='%ae')
+        COMMIT_MSG=$(git show -s --format='%s')
+        echo "author: $AUTHOR_NAME"
+        echo "email: $AUTHOR_EMAIL"
+        echo "message: $COMMIT_MSG"
+        test "$AUTHOR_NAME" = "GitHub Action"
+        test "$AUTHOR_EMAIL" = "action@github.com"
+        test "$COMMIT_MSG" = "Auto commit"
+
+    - name: Remove test file
+      run: rm -f test-file.txt
+
+    - name: 'Test-02: not use default inputs'
+      uses: satt-dots/simple-commit-and-push@main # TODO: change to tag `v1`
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "Commit message for testing"
+        user-email: 41898282+github-actions[bot]@users.noreply.github.com
+        user-name: github-actions[bot]
+
+    - name: 'Test-02: Check latest commit info'
+      run: |
+        set -e
+        AUTHOR_NAME=$(git show -s --format='%an')
+        AUTHOR_EMAIL=$(git show -s --format='%ae')
+        COMMIT_MSG=$(git show -s --format='%s')
+        echo "author: $AUTHOR_NAME"
+        echo "email: $AUTHOR_EMAIL"
+        echo "message: $COMMIT_MSG"
+        test "$AUTHOR_NAME" = "github-actions[bot]"
+        test "$AUTHOR_EMAIL" = "41898282+github-actions[bot]@users.noreply.github.com"
+        test "$COMMIT_MSG" = "Commit message for testing"
+
+    - name: 'Test-03: set hash before'
+      run: |
+        HASH=$(git rev-parse HEAD)
+        echo "HASH_AFTER_TEST02=$HASH" >> $GITHUB_ENV
+
+    - name: 'Test-03: no changes'
+      uses: satt-dots/simple-commit-and-push@main # TODO: change to tag `v1`
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: 'Test-03: Check latest commit info'
+      run: |
+        set -e
+        HASH_BEFORE="$HASH_AFTER_TEST02"
+        HASH_AFTER=$(git rev-parse HEAD)
+        echo "HASH_BEFORE: $HASH_BEFORE"
+        echo "HASH_AFTER: $HASH_AFTER"
+        test "$HASH_BEFORE" = "$HASH_AFTER"
