@@ -18,16 +18,16 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
     - name: Install Task
-      uses: arduino/setup-task@v2
+      uses: arduino/setup-task@b91d5d2c96a56797b48ac1e0e89220bf64044611 # v2.0.0
       with:
         version: 3.x
         repo-token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Install mise and setup
-      uses: jdx/mise-action@v3
+      uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
       with:
         cache: true
         github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -39,7 +39,7 @@ jobs:
       run: echo "This is a test file." > test-file.txt
 
     - name: 'Test-01: use default inputs'
-      uses: satt-dots/simple-commit-and-push@main # TODO: change to tag `v1`
+      uses: satt-dots/simple-commit-and-push@ce4cdcc1453920f2bd18b4bba5a4bb830efb7b4b # v1.0.1
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -60,7 +60,7 @@ jobs:
       run: rm -f test-file.txt
 
     - name: 'Test-02: not use default inputs'
-      uses: satt-dots/simple-commit-and-push@main # TODO: change to tag `v1`
+      uses: satt-dots/simple-commit-and-push@ce4cdcc1453920f2bd18b4bba5a4bb830efb7b4b # v1.0.1
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         commit-message: "Commit message for testing"
@@ -84,7 +84,7 @@ jobs:
       run: echo "HASH_BEFORE=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
 
     - name: 'Test-03: no changes'
-      uses: satt-dots/simple-commit-and-push@main # TODO: change to tag `v1`
+      uses: satt-dots/simple-commit-and-push@ce4cdcc1453920f2bd18b4bba5a4bb830efb7b4b # v1.0.1
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
